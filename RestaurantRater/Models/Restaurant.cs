@@ -11,14 +11,14 @@ namespace RestaurantRater.Models
         //Primary key is the first item in the list unless otherwise defined
         //look up other annotations
         [Key]
-        [Required]
+        
         public int Id { get; set; }
         [Required]
         public string Style { get; set; }
-        [Required]
-        [Range(0d, 5d)]
+        [Required]        
         public string Name { get; set; }
         [Required]
+        [Range(0d, 5d)]
         public double Rating { get; set; }
         [Required]
         [Range(1,5)]
