@@ -16,6 +16,7 @@ namespace RestaurantRater.Controllers
         //create a field so that we can make changes to the database without messing up the actual database
         private readonly RestaurantDbContext _context = new RestaurantDbContext();
         //return status codes
+        [HttpPost]
         //POST
         public async Task<IHttpActionResult> PostRestaurant(Restaurant restaurant)
         {   //ModelState is a property from API controller
@@ -28,14 +29,14 @@ namespace RestaurantRater.Controllers
             }           //ModelState will pass back all the errors
             return BadRequest(ModelState);
         }
-
+        [HttpGet]
         //GET ALL
         public async Task<IHttpActionResult> GetAll()
         {
             List<Restaurant> allRestaurants = await _context.Restaurants.ToListAsync();
             return Ok(allRestaurants);
         }
-
+        [HttpGet]
         //GET BY ID
         public async Task<IHttpActionResult> GetById(int Id)
         {
@@ -46,9 +47,31 @@ namespace RestaurantRater.Controllers
             }
             return Ok(restaurant);
         }
+        [HttpPut]
+        //PUT (update)                                          //
+        public async Task<IHttpActionResult> UpdateRestaurant([FromUri] int Id, [FromBody]Restaurant model)
+        {
+            if(ModelState.IsValid && model != null)
+            {               //this is our entity
+                Restaurant restaurant = await _context.Restaurants.FindAsync(Id);
+                if(restaurant != null)
+                {
+                    restaurant.Name = model.Name;
+                    restaurant.Rating = model.Rating;
+                    restaurant.Style = model.Style;
+                    restaurant.DollaSigns = model.DollaSigns;
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
 
-        //PUT (update)
-
+                return NotFound();
+            }
+            return BadRequest(ModelState);
+        }
+               
         //DELETE BY ID
+
+
+
     }
 }
